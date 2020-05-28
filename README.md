@@ -1,5 +1,5 @@
 # xlsconv
-A simple Xls Conv Tool 一个简单execl转换工具  
+A Simple xls Conv Tool 一个简单execl转换工具  
 
 ### 支持功能：  
 * to Json： 转换为json格式文件
@@ -18,11 +18,67 @@ A simple Xls Conv Tool 一个简单execl转换工具
 * -F：【必须】转换格式。目前支持json xml
 * example: `python xlsconv -I xls/xx.xlsx -O yy.json -F json`
 
+### 输入文件:
+* 输入文件为xls或者xlsx的excel文件，其转换的字段在xlsx内部定义
+* 每个excel表格需要定义一个meta页签用于对每个其他数据页签进行说明
+* meta页签按列区分，每一列定义一个数据页签  
+  * 在meta列的首行定义各数据页签对应的输出表名。格式为页签名=table名  
+  * 在meta每一列的其他行依次定义各数据页签表头字段  
+  * 各数据页签的表头定义遵循列名=prefix+字段名的格式.prefix说明字段类型  
+  * prefix:#表示数字 $表示字符串 ^表示原始文本  
+  * 只有在meta中定义的数据页签才能被转出，未被定义的则不处理  
+* 每一个数据页签对应一个单独的表，该表名在meta中定义  
+  * 数据页签的首行定义表头 对各列名进行说明  
+  * 表头对应的输出字段名在meta中定义 其中前缀表明不同的类型  
+  * 数据页签其他行填入数据。如果是空白行则按照类型生成对应的默认值
+  * 工具只转换在meta中定义的表头字段，如果数据页签有其他列未在meta中定义则不被转出  
+  
+### 输出文件:
+ * JSON:
+   * 生成的json默认形式为:  
+   ```
+   {
+     "table_name":
+     {
+       "count":0
+       "res":
+       [
+         {"col1":xx , "col2":xx , ...}
+       ]
+     }
+   }
+   ```
+   * table_name 是数据页签的定义表名
+   * count:是数据页签内数据的行数
+   * res:包含所有行的数据 里面的每个{}表明每一行。每行的col字段在meta中定义
+   
+ * XML:
+   * 生成的xml默认形式为:
+   ```
+   <xlsconv>
+   <table_name>
+     <count>0</count>
+     <res>
+       <entry>
+         <col1>xx</col1>
+         <col2>xx</col2>
+       </entry>
+     </res>
+   </table_name>
+   </xlsconv>
+   ```
+   * table_name 是数据页签的定义表名
+   * count:是数据页签内数据的行数
+   * res:包含所有行的数据 里面的每个<entry></entry>表明每一行
+   * entry:是每一行的数据说明，里面的col字段名在meta中定义  
+
 ### 举例说明:
+* 输入文件以xls/目录下的物品表.xlsx为例，里面包含了可能的各种情况  
+
 #### json:
 * 执行 `python xlsconv.py -F json  -I xls/物品表.xlsx`
   ```
-  open xls/▒▒Ʒ▒▒.xlsx succcess!
+  open input file succcess!
   parse meta finish!
   parse_sheet finish!
   parse_sheet finish!
@@ -52,17 +108,18 @@ A simple Xls Conv Tool 一个简单execl转换工具
       {"id":10102, "name":"头盔", "price":100, "type":101, "pos":[0 , 1 , 4], "can_sell":0},
       {"id":10203, "name":"帽子", "price":200, "type":102, "pos":[], "can_sell":1},
       {"id":10304, "name":"上衣", "price":300, "type":103, "pos":[2], "can_sell":0},
+      {"id":0, "name":"", "price":0, "type":0, "pos":, "can_sell":0},
       {"id":10405, "name":"双手剑", "price":400, "type":104, "pos":[], "can_sell":0},
       {"id":10506, "name":"靴子", "price":500, "type":105, "pos":[3, 7], "can_sell":0}
     ]
   }
   }
-  ```
+  ```  
   
 #### xml:
 * 执行 `python xlsconv.py -F xml  -I xls/物品表.xlsx`
   ```
-  open xls/▒▒Ʒ▒▒.xlsx succcess!
+  open input file succcess!
   parse meta finish!
   parse_sheet finish!
   parse_sheet finish!
@@ -121,6 +178,14 @@ A simple Xls Conv Tool 一个简单execl转换工具
         <price>300</price>
         <type>103</type>
         <pos>[2]</pos>
+        <can_sell>0</can_sell>
+      </entry>
+      <entry>
+        <id>0</id>
+        <name>""</name>
+        <price>0</price>
+        <type>0</type>
+        <pos></pos>
         <can_sell>0</can_sell>
       </entry>
       <entry>
