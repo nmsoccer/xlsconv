@@ -43,7 +43,7 @@ def safe_print(v):
   else:
     print(v);  
 
-def conv_raw(v):
+def conv_str(v):
   if isinstance(v , unicode):
     return v;
   if isinstance(v , str) != True:
@@ -297,12 +297,12 @@ def dump_json_content(file , sheet_info , parent_indent):
           ss = ss + str(0);        
       elif refer[0] == PARAM_TYPE_STRING:
         if row[col] != '':
-          ss = ss + '"' + row[col] + '"';
+          ss = ss + '"' + conv_str(row[col]) + '"';
         else:
           ss = ss + '""';        
       else:
         if row[col] != '':      
-          ss = ss + conv_raw(row[col]);
+          ss = ss + conv_str(row[col]);
           #ss = ss + '""'; empty raw column value need set explicit
           #need set explicit          
            
@@ -388,12 +388,12 @@ def dump_xml_content(file , sheet_info , parent_indent):
           ss = ss + str(0);        
       elif refer[0] == PARAM_TYPE_STRING:
         if row[col] != '':
-          ss = ss + '"' + row[col] + '"';
+          ss = ss + '"' + conv_str(row[col]) + '"';
         else:
           ss = ss + '""';        
       else:
         if row[col] != '':      
-          ss = ss + conv_raw(row[col]);
+          ss = ss + conv_str(row[col]);
           #ss = ss + '""'; empty raw column value need set explicit
           #need set explicit          
       
