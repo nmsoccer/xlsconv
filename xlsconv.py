@@ -51,7 +51,7 @@ def open_xls(file_name):
   if workbook == None:
     safe_print('open %s failed!' % file_name);
     return False;  
-  safe_print('open %s succcess!' % file_name);
+  safe_print('open input file succcess!');
   WORKBOOK = workbook;
   
   #init each sheet
