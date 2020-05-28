@@ -43,6 +43,13 @@ def safe_print(v):
   else:
     print(v);  
 
+def conv_raw(v):
+  if isinstance(v , unicode):
+    return v.encode('utf-8');
+  if isinstance(v , str) != True:
+    return str(v);  
+
+
 def open_xls(file_name):
   global WORKBOOK;
   global SHEET_DICT;
@@ -295,7 +302,7 @@ def dump_json_content(file , sheet_info , parent_indent):
           ss = ss + '""';        
       else:
         if row[col] != '':      
-          ss = ss + row[col];
+          ss = ss + conv_raw(row[col]);
           #ss = ss + '""'; empty raw column value need set explicit
           #need set explicit          
            
@@ -386,7 +393,7 @@ def dump_xml_content(file , sheet_info , parent_indent):
           ss = ss + '""';        
       else:
         if row[col] != '':      
-          ss = ss + row[col];
+          ss = ss + conv_raw(row[col]);
           #ss = ss + '""'; empty raw column value need set explicit
           #need set explicit          
       
