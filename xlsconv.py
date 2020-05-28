@@ -45,7 +45,7 @@ def safe_print(v):
 
 def conv_raw(v):
   if isinstance(v , unicode):
-    return v.encode('utf-8');
+    return v;
   if isinstance(v , str) != True:
     return str(v);  
 
